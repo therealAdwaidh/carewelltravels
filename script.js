@@ -196,6 +196,19 @@
     // crossing point is measured correctly.
     window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
 
+    // Feature grid: a soft fade-and-rise entrance for the brand block
+    // and the four feature cards, staggered gently so the whole group
+    // settles into place rather than appearing all at once.
+    gsap.set('.feature-brand, .feature-card', { opacity:0, y:18 });
+    gsap.to('.feature-brand, .feature-card', {
+      opacity:1, y:0, duration:1.1, ease:'power2.out', stagger:0.12,
+      scrollTrigger:{
+        trigger:'.feature-grid',
+        start:'top 85%',
+        toggleActions:'play none none reverse'
+      }
+    });
+
     // Journey thread: the spine's fill height and travelling dot are
     // scrubbed against how far you've scrolled through the whole story
     // block (About → Contact) as one continuous distance, so the line
