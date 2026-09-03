@@ -123,6 +123,7 @@ nav{
   height:170vh;
   padding:0;
   border-top:none;
+  background:var(--ground);
 }
 /* Mountain reveal: a standalone section the zoom settles into once it
    finishes — its own clean screen of the destination photo, distinct
@@ -134,6 +135,7 @@ nav{
   height:220vh;
   padding:0;
   border-top:none;
+  background:var(--ground);
 }
 /* The photo, tint, and stat typography share one tall frame, but the
    frame itself scrolls normally (no sticky/pin) — the photo is fixed
