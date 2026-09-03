@@ -7,7 +7,11 @@
     },
     gate:{
       scrub:0.35,              // scrub lag (seconds) between scroll and zoom; 0 = instant
-      zoomTo:9,                // how far the foreground towers layer scales up (moves closer) by the end of the scroll runway
+      // On narrow viewports the towers cutout already fills most of the
+      // frame, so the same 9x scale used on desktop overshoots into an
+      // unrecognizable close-up blur almost immediately — scale the max
+      // zoom down for small screens so the effect stays legible.
+      zoomTo:window.innerWidth < 640 ? 3.2 : (window.innerWidth < 880 ? 5 : 9),
       bgZoomTo:1.15            // how far the background sky/mountain layer scales up — much less, so it reads as staying distant
     },
     reveal:{
