@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carewell Travels — Your Journey, Your Story</title>
+  <meta name="description" content="Personalized luxury travel planning built around how you want to feel, not just where you want to go.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MotionPathPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.2.3/dist/lenis.min.js"></script>
+</head>
+<body>
+
+  <header id="site-header">
+    <nav>
+      <a class="logo" href="#top"><span class="logo-mark"></span>Carewell Travels</a>
+      <ul class="nav-links">
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#experiences">Experiences</a></li>
+        <li><a href="#destinations">Destinations</a></li>
+        <li><a href="#services">Services</a></li>
+      </ul>
+      <a class="nav-cta" href="#contact">Start Your Journey</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+    </nav>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="gate-pin">
+      <div class="gate-bg" id="gateBg">
+        <img class="gate-photo" id="gatePhoto" src="images/hero-gate.jpg" alt="Temple gate opening onto a sunset sky">
+      </div>
+      <div class="gate-shot" id="gateShot">
+        <img class="gate-towers" id="gateTowers" src="images/hero-towers.png" alt="">
+        <div class="gate-tint"></div>
+      </div>
+
+      <div class="gate-copy">
+        <div class="gate-copy-left">
+          <span class="split-line"><span class="split-word">We</span> <span class="split-word">are</span></span>
+          <span class="split-line"><span class="split-word">the</span> <span class="split-word">threshold.</span></span>
+        </div>
+        <div class="gate-copy-right">
+          <span class="split-line"><span class="split-word">We</span> <span class="split-word">are</span></span>
+          <span class="split-line"><span class="split-word">the</span> <span class="split-word"><em>after</em>.</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="scroll-cue">
+      <span class="line"></span>
+      <span>Scroll down</span>
+      <span class="scroll-cue-sub">to start the journey</span>
+    </div>
+  </section>
+
+  <section class="mountain-reveal" id="mountainReveal">
+    <div class="mountain-pin">
+      <img class="mountain-photo" src="images/mountain-fog.jpg" alt="Mount Agung at sunrise">
+      <div class="mountain-tint"></div>
+      <div class="wrap stat-overlay">
+        <p class="stat-copy scroll-brighten" id="statBrightenText">Carewell Travels has spent over a decade building journeys most agencies would call too specific to plan — more than eight hundred routes shaped for one traveler at a time, across sixty countries, each one built by a planner who has actually stood where you are about to stand.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="story" style="position:relative;">
+    <div class="journey-track" id="journeyTrack">
+      <div class="journey-thread" id="journeyThread"></div>
+      <div class="journey-dot" id="journeyDot"></div>
+    </div>
+
+    <section id="about">
+      <div class="wrap">
+        <div class="about-grid">
+          <div class="reveal">
+            <div class="eyebrow" style="margin-bottom:1rem; display:block;">Our philosophy</div>
+            <h2>Most agencies ask "where do you want to go?" We ask how you want to feel when you get there.</h2>
+            <p class="about-copy scroll-brighten" id="aboutBrighten">That single shift changes everything about how we plan — the pace of a day, the choice of a stay, the person who meets you at the airport. Our team brings decades of hands-on travel knowledge to every itinerary, balancing luxury with authenticity so the trip feels like yours, not a template.</p>
+          </div>
+          <ul class="feel-list reveal d2">
+            <li><span>Restored</span>Slow mornings, no itinerary to race through.</li>
+            <li><span>Immersed</span>A city seen through the people who live there.</li>
+            <li><span>Celebrated</span>Milestones marked properly, without asking.</li>
+            <li><span>Untethered</span>Nothing to manage once you land.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiences">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="reveal">A journey built for who you're traveling as.</h2>
+          <a href="#contact" class="btn-ghost reveal">Tell us which one</a>
+        </div>
+        <div class="exp-grid">
+          <div class="exp-card reveal"><span class="eyebrow">Solo Travel</span><h3>Go it alone, planned in full</h3><p>Independence with a safety net — routes designed for one, with people to meet along the way.</p></div>
+          <div class="exp-card reveal d1"><span class="eyebrow">Senior Sojourns</span><h3>Senior Sojourns</h3><p>Comfortable pacing, accessible stays, and the kind of trip that doesn't feel like it's been simplified for you.</p></div>
+          <div class="exp-card reveal d2"><span class="eyebrow">Girls Gotta Go</span><h3>Girls Gotta Go</h3><p>Group trips built around the friends who actually want to be in every photo together.</p></div>
+          <div class="exp-card reveal"><span class="eyebrow">Lover's Luxe</span><h3>Lover's Luxe</h3><p>Honeymoons and anniversaries, handled down to the detail so nothing needs managing.</p></div>
+          <div class="exp-card reveal d1"><span class="eyebrow">Family Vacation</span><h3>Family Vacation</h3><p>Something for every age on the itinerary — including the adults.</p></div>
+          <div class="exp-card reveal d2"><span class="eyebrow">Bespoke Retreats</span><h3>Bespoke Retreats</h3><p>Fully custom journeys built from a blank page around exactly what you're after.</p></div>
+          <div class="exp-card reveal"><span class="eyebrow">Students Unplugged</span><h3>Students Unplugged</h3><p>Group travel for students that's actually well-run, not just affordable.</p></div>
+          <div class="exp-card reveal d1"><span class="eyebrow">Jet Privé</span><h3>Jet Privé</h3><p>Private jet charter for when the journey itself needs to disappear.</p></div>
+          <div class="exp-card reveal d2"><span class="eyebrow">Sky Charter</span><h3>Sky Charter</h3><p>On-demand air charter, arranged with the same care as the ground itinerary.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="destinations">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="reveal">Where our clients have gone this year.</h2>
+        </div>
+        <div class="dest-cloud reveal">
+          <span class="dest-chip">Mexico</span><span class="dest-chip">Canada</span><span class="dest-chip">South Africa</span>
+          <span class="dest-chip">Finland</span><span class="dest-chip">Malaysia</span><span class="dest-chip">Bali</span>
+          <span class="dest-chip">Hong Kong &amp; Macau</span><span class="dest-chip">UK &amp; Scotland</span><span class="dest-chip">France</span>
+          <span class="dest-chip">Italy</span><span class="dest-chip">USA</span><span class="dest-chip">Japan</span>
+          <span class="dest-chip">Thailand</span><span class="dest-chip">Maldives</span><span class="dest-chip">Kenya</span>
+          <span class="dest-chip">New Zealand</span><span class="dest-chip">Norway</span><span class="dest-chip">Seychelles</span>
+          <span class="dest-chip">Morocco</span><span class="dest-chip">Singapore</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="reveal">Everything under one plan.</h2>
+        </div>
+        <div class="service-list">
+          <div class="service-item reveal"><div><h3>Holiday packages</h3><p>Domestic and international, tailored end to end rather than assembled from a shelf.</p></div><span class="tag">Leisure</span></div>
+          <div class="service-item reveal d1"><div><h3>Flights &amp; hotels</h3><p>Sourced and booked directly, matched to the pace and standard of the rest of the trip.</p></div><span class="tag">Logistics</span></div>
+          <div class="service-item reveal d2"><div><h3>Ground transport</h3><p>Bus travel and car rentals arranged so the in-between moments aren't an afterthought.</p></div><span class="tag">Logistics</span></div>
+          <div class="service-item reveal"><div><h3>Corporate travel</h3><p>Reliable planning and support for business trips, incentive travel, and offsites.</p></div><span class="tag">Corporate</span></div>
+          <div class="service-item reveal d1"><div><h3>Jet charter</h3><p>Private air travel arranged with the same personal attention as everything else.</p></div><span class="tag">Jet Privé</span></div>
+          <div class="service-item reveal d2"><div><h3>Bespoke retreats</h3><p>A trip designed from scratch around a feeling, not a checklist of sights.</p></div><span class="tag">Custom</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="reveal">What it felt like for them.</h2>
+        </div>
+        <div class="testi-grid">
+          <div class="testi-card reveal">
+            <blockquote>"The whole booking process was smooth and stress-free, with recommendations that actually felt personal."</blockquote>
+            <cite>Hema Pandey — Paris</cite>
+          </div>
+          <div class="testi-card reveal d1">
+            <blockquote>"Every detail was meticulously handled, leaving us with nothing to worry about."</blockquote>
+            <cite>Ajay Kumar — Honeymoon</cite>
+          </div>
+          <div class="testi-card reveal d2">
+            <blockquote>"Our itinerary balanced romantic moments with real adventure, across some genuinely luxury stays."</blockquote>
+            <cite>Rajat &amp; Minni — Vietnam</cite>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="cta-section">
+      <div class="wrap">
+        <div class="cta-grid">
+          <div class="reveal">
+            <div class="eyebrow" style="display:block; margin-bottom:1rem;">Start here</div>
+            <h2>So — how do you want to feel?</h2>
+            <p>Tell us roughly where and when, and a planner will reach out to start shaping the details.</p>
+            <div class="contact-methods">
+              <a href="tel:+918017933155">+91 80179 33155</a>
+              <a href="tel:+918697944445">+91 86979 44445</a>
+              <a href="mailto:puja.toshniwal@carewelltravels.com">puja.toshniwal@carewelltravels.com</a>
+            </div>
+          </div>
+          <form>
+            <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" placeholder="Your name" required></div>
+            <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@example.com" required></div>
+            <div class="field"><label for="dest">Roughly where to</label><input id="dest" name="destination" type="text" placeholder="e.g. Bali, sometime in winter"></div>
+            <div class="field"><label for="travelers">Traveling as</label>
+              <select id="travelers" name="travelers">
+                <option>Solo</option>
+                <option>Couple</option>
+                <option>Family</option>
+                <option>Group</option>
+                <option>Corporate</option>
+              </select>
+            </div>
+            <button class="btn" type="submit">Start Your Journey</button>
+            <p class="form-note">A member of the team replies personally — no automated itinerary.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap foot-row">
+      <span>© 2026 Carewell Travels · Your Journey, Your Story</span>
+      <ul class="foot-links">
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#experiences">Experiences</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+:root{
+  --ground:#0B0E12;
+  --ground-raised:#12161C;
+  --ink:#F2EDE3;
+  --ink-soft:#9BA3AE;
+  --gold:#C9A25A;
+  --gold-bright:#E4C583;
+  --line:#242B34;
+  --shadow: 210 40% 2%;
+}
+/* This design commits to one mood — dark luxury — in both OS themes. */
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:'Jost', ui-sans-serif, system-ui, sans-serif;
+  font-weight:300;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+}
+
+h1,h2,h3{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-weight:500;
+  letter-spacing:0.005em;
+  text-wrap:balance;
+  margin:0;
+  color:var(--ink);
+}
+.eyebrow{
+  text-transform:uppercase;
+  letter-spacing:0.22em;
+  font-size:0.7rem;
+  font-weight:400;
+  color:var(--gold);
+}
+a{color:inherit;}
+img{max-width:100%; display:block;}
+
+.wrap{
+  max-width:1180px;
+  margin:0 auto;
+  padding:0 clamp(1.25rem, 4vw, 3rem);
+}
+
+/* ---------- Nav ---------- */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.3rem 0;
+  transition:background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
+  border-bottom:1px solid transparent;
+}
+header.scrolled{
+  padding:0.9rem 0;
+}
+nav{
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1180px; margin:0 auto;
+  padding:0 clamp(1.25rem, 4vw, 3rem);
+}
+.logo{
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.4rem;
+  font-weight:600;
+  letter-spacing:0.01em;
+  display:flex; align-items:center; gap:0.6rem;
+  text-decoration:none;
+  color:var(--ink);
+  text-shadow:0 1px 3px rgba(0,0,0,0.55), 0 1px 12px rgba(0,0,0,0.35);
+}
+.logo-mark{
+  width:7px; height:7px;
+  background:var(--gold);
+  transform:rotate(45deg);
+  flex-shrink:0;
+}
+.nav-links{
+  display:flex; gap:2.4rem; list-style:none; margin:0; padding:0;
+}
+.nav-links a{
+  text-decoration:none;
+  font-size:0.82rem;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  position:relative;
+  padding-bottom:4px;
+  transition:color 0.25s ease;
+  text-shadow:0 1px 3px rgba(0,0,0,0.55), 0 1px 10px rgba(0,0,0,0.3);
+}
+.nav-links a:hover, .nav-links a:focus-visible{ color:var(--gold-bright); }
+.nav-links a::after{
+  content:'';
+  position:absolute; left:0; bottom:0; width:0; height:1px;
+  background:var(--gold);
+  transition:width 0.3s ease;
+}
+.nav-links a:hover::after, .nav-links a:focus-visible::after{ width:100%; }
+.nav-cta{
+  font-size:0.78rem;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  border:1px solid var(--gold);
+  background:var(--gold);
+  color:#181206;
+  padding:0.6rem 1.3rem;
+  text-decoration:none;
+  transition:background 0.3s ease, border-color 0.3s ease;
+}
+.nav-cta:hover{ background:var(--gold-bright); border-color:var(--gold-bright); }
+.nav-toggle{ display:none; background:none; border:none; color:var(--ink); cursor:pointer; padding:0.4rem; font-size:1.1rem; }
+
+/* ---------- Hero: gate photo, full view on load, pushes toward the
+   sky gap on scroll ---------- */
+.hero{
+  position:relative;
+  height:170vh;
+  padding:0;
+  border-top:none;
+}
+/* Mountain reveal: a standalone section the zoom settles into once it
+   finishes — its own clean screen of the destination photo, distinct
+   from the hero's pinned zoom and from the dark About section that
+   follows it. This is what makes the mountain its own numbered
+   "second section" rather than blending straight into the dark UI. */
+.mountain-reveal{
+  position:relative;
+  height:220vh;
+  padding:0;
+  border-top:none;
+}
+/* The photo, tint, and stat typography share one tall frame, but the
+   frame itself scrolls normally (no sticky/pin) — the photo is fixed
+   in place with position:absolute so it fills the frame's whole
+   height as a backdrop, while the text scrolls past over it, and the
+   word-brighten effect keeps pace with that same scroll instead of
+   the page pausing to let it finish. */
+.mountain-pin{
+  position:relative;
+  height:100%;
+  min-height:100svh;
+  overflow:hidden;
+}
+.mountain-photo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:50% 60%;
+}
+.mountain-tint{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 0%, transparent 70%, color-mix(in srgb, var(--ground) 90%, transparent) 100%);
+}
+.stat-overlay{
+  position:relative;
+  z-index:1;
+  height:100%;
+  display:flex;
+  align-items:flex-start;
+  padding-top:clamp(4rem, 12vh, 8rem);
+}
+
+/* Standalone stat-typography section: a large brightening statement,
+   the sole content of its own screen, matching the mountain photo's
+   warm dusk tone so the eye reads it as a continuation of that scene
+   rather than a hard cut into different content. */
+.stat-brighten{
+  min-height:100svh;
+  display:flex; align-items:center;
+  background:linear-gradient(180deg, #2A1E17 0%, var(--ground) 60%);
+  padding:0;
+  border-top:none;
+}
+.stat-copy{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-size:clamp(1.8rem, 4vw, 3.2rem);
+  line-height:1.3;
+  margin:0;
+}
+/* Two-layer depth zoom: the background layer (full photo — sky,
+   mountain, water) stays put or drifts very slightly; the foreground
+   layer (towers-only cutout, transparent gap) scales up and moves
+   toward the viewer on scroll, so it reads as physically walking
+   through the gate toward a fixed distant mountain — real parallax,
+   not one flat image scaling as a unit. Nav/CTA sit outside both
+   layers entirely, so they never move. */
+.gate-pin{
+  position:sticky; top:0;
+  height:100svh;
+  overflow:hidden;
+  background:#050604;
+}
+.gate-bg{
+  position:absolute; inset:0;
+  transform-origin:50% 50%;
+  will-change:transform;
+}
+.gate-photo{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:50% 5%;
+}
+.gate-shot{
+  position:absolute; inset:0;
+  transform-origin:50% 58%;
+  will-change:transform;
+}
+.gate-towers{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:50% 5%;
+}
+.gate-tint{
+  display:none;
+}
+
+/* Flanking split headline: two mirrored two-line phrases sit in the
+   open space to the left and right of the gate photo, rather than
+   stacked as one text block — the photo itself divides them. */
+.gate-copy{
+  position:absolute; inset:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 clamp(1.25rem, 5vw, 4rem);
+  pointer-events:none;
+}
+.gate-copy h1, .gate-copy div{ margin:0; }
+.gate-copy-left, .gate-copy-right{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-weight:500;
+  font-size:clamp(1.8rem, 4vw, 3.4rem);
+  line-height:1.05;
+  color:var(--ink);
+}
+.gate-copy-right{ text-align:right; }
+.gate-copy-right em, .gate-copy-left em{ font-style:italic; color:var(--gold-bright); }
+@media (max-width:880px){
+  .gate-copy-right{ display:none; }
+}
+
+.hero-sub{
+  max-width:46ch;
+  font-size:1.05rem;
+  color:var(--ink-soft);
+  opacity:0; transform:translateY(20px);
+  animation:rise 1s 0.5s cubic-bezier(.16,.8,.28,1) forwards;
+}
+/* JS takes over the gate-copy/sub/actions reveal via GSAP once it
+   loads — this class (added by script) stops the CSS keyframe so the
+   two systems don't fight over the same properties. */
+.js-driven .hero-sub, .js-driven .hero-actions{
+  animation:none;
+}
+/* Hand-rolled word-split reveal (no SplitText plugin needed): each
+   word sits in its own overflow-hidden mask and rises up from behind
+   it in a staggered wave, rather than the headline fading as one block. */
+.split-line{
+  display:block; overflow:hidden;
+}
+.split-word{
+  display:inline-block;
+  transform:translateY(115%);
+  will-change:transform;
+}
+.hero-actions{
+  margin-top:1.8rem;
+  display:flex; align-items:center; justify-content:center; gap:1.8rem; flex-wrap:wrap;
+  opacity:0; transform:translateY(20px);
+  animation:rise 1s 0.65s cubic-bezier(.16,.8,.28,1) forwards;
+}
+@keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+.btn{
+  display:inline-flex; align-items:center; gap:0.7rem;
+  background:var(--gold); color:#181206;
+  padding:1rem 1.9rem;
+  text-decoration:none;
+  font-size:0.82rem; font-weight:500;
+  text-transform:uppercase; letter-spacing:0.08em;
+  border:1px solid var(--gold);
+  cursor:pointer;
+  transition:background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn:hover{ background:var(--gold-bright); border-color:var(--gold-bright); transform:translateY(-2px); box-shadow:0 16px 30px -14px color-mix(in srgb, var(--gold) 55%, transparent); }
+.btn-ghost{
+  color:var(--ink); text-decoration:none; font-size:0.85rem;
+  text-transform:uppercase; letter-spacing:0.06em;
+  display:inline-flex; align-items:center; gap:0.6rem;
+  border-bottom:1px solid var(--line);
+  padding-bottom:3px;
+  transition:border-color 0.25s ease, gap 0.25s ease, color 0.25s ease;
+}
+.btn-ghost:hover{ border-color:var(--gold); color:var(--gold-bright); gap:0.85rem; }
+
+.scroll-cue{
+  position:absolute; left:clamp(1.25rem, 4vw, 3rem); bottom:2rem;
+  z-index:2;
+  display:flex; align-items:center; gap:0.7rem;
+  color:var(--ink-soft);
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.18em;
+}
+.scroll-cue-sub{ opacity:0.6; }
+@media (max-width:640px){ .scroll-cue-sub{ display:none; } }
+.scroll-cue .line{
+  width:1px; height:38px; background:var(--line);
+  position:relative; overflow:hidden;
+}
+.scroll-cue .line::after{
+  content:''; position:absolute; top:-100%; left:0; width:100%; height:100%;
+  background:var(--gold);
+  animation:drip 1.8s ease-in-out infinite;
+}
+@keyframes drip{ 0%{top:-100%;} 50%{top:0;} 100%{top:100%;} }
+
+section{
+  position:relative;
+  padding:clamp(4.5rem, 11vh, 7.5rem) 0;
+  border-top:1px solid var(--line);
+}
+/* GSAP drives .reveal now — clip-path unmask instead of a plain fade.
+   Base state (pre-JS / reduced-motion) still degrades to visible. */
+.reveal{
+  opacity:0;
+  clip-path:inset(0 0 100% 0);
+}
+.reveal.in{ opacity:1; clip-path:inset(0 0 0% 0); }
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity:1 !important; clip-path:none !important; }
+}
+
+/* Journey thread: a single gold line that grows down the page as you
+   scroll from the About section through Contact, with a marker dot
+   travelling along its leading edge — a spine tying every section's
+   own reveal into one continuous scroll story instead of separate,
+   unrelated section animations. Lives beside the wrap's own padding
+   so it never overlaps content; hidden below the width where that
+   margin gets too tight to read comfortably. */
+.journey-track{
+  position:absolute; left:clamp(1.25rem, 4vw, 3rem); top:0; bottom:0;
+  width:1px;
+  z-index:1;
+  pointer-events:none;
+  display:none;
+  background:var(--line);
+}
+@media (min-width:1080px){ .journey-track{ display:block; } }
+.journey-thread{
+  position:absolute; left:0; top:0; width:100%; height:0%;
+  background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+}
+.journey-dot{
+  position:absolute; left:50%; top:0%;
+  width:7px; height:7px; margin-left:-3.5px; margin-top:-3.5px;
+  border-radius:50%; background:var(--gold-bright);
+  box-shadow:0 0 10px color-mix(in srgb, var(--gold) 70%, transparent);
+}
+
+/* ---------- About / feeling ---------- */
+.about-grid{
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:clamp(2.5rem, 6vw, 5rem);
+  align-items:start;
+}
+.about-grid h2{
+  font-size:clamp(1.95rem, 3.6vw, 2.7rem);
+  line-height:1.2;
+}
+.about-copy{
+  color:var(--ink-soft);
+  margin-top:1.4rem;
+  max-width:52ch;
+}
+/* Scroll-progressive text brighten: JS wraps each word in a span;
+   each word's color/opacity is scrubbed individually against how far
+   you've scrolled through the paragraph, so reading progress reads
+   as words lighting up left-to-right, top-to-bottom rather than the
+   paragraph fading in as one block. */
+/* Each wrapped visual line is grouped into its own .line-sweep span at
+   runtime (JS): it gets a two-color horizontal gradient clipped to the
+   text (background-clip:text) with a hard stop at --sweep%, animated
+   from 0 to 100 as the line scrolls through view — so the line reads
+   bright up to that point and dim after it, sweeping left-to-right. */
+.line-sweep{
+  -webkit-text-fill-color:transparent;
+}
+.feel-list{ list-style:none; margin:1.8rem 0 0; padding:0; display:flex; flex-direction:column; gap:0.9rem; }
+.feel-list li{
+  display:flex; align-items:baseline; gap:0.9rem;
+  padding-bottom:0.9rem; border-bottom:1px solid var(--line);
+  font-family:'Cormorant Garamond', serif; font-size:1.25rem; font-style:italic;
+}
+.feel-list li span{ color:var(--gold); font-family:'Jost', sans-serif; font-style:normal; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.12em; flex-shrink:0; }
+
+/* ---------- Experiences ---------- */
+.section-head{
+  display:flex; justify-content:space-between; align-items:flex-end; gap:2rem;
+  margin-bottom:3rem; flex-wrap:wrap;
+}
+.section-head h2{ font-size:clamp(1.95rem, 3.6vw, 2.7rem); max-width:18ch; }
+.exp-grid{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.exp-card{
+  background:var(--ground);
+  padding:2rem 1.8rem;
+  transition:background 0.4s ease;
+  transform-origin:top center;
+}
+.exp-card:hover{
+  background:var(--ground-raised);
+}
+.exp-card .eyebrow{ display:block; margin-bottom:1.1rem; }
+.exp-card h3{ font-size:1.4rem; margin-bottom:0.6rem; }
+.exp-card p{ color:var(--ink-soft); font-size:0.92rem; margin:0; }
+
+/* ---------- Destinations ---------- */
+.dest-cloud{
+  display:flex; flex-wrap:wrap; gap:0.8rem;
+  perspective:600px;
+}
+.dest-chip{
+  border:1px solid var(--line);
+  padding:0.75rem 1.4rem;
+  font-size:0.88rem;
+  letter-spacing:0.02em;
+  background:transparent;
+  transition:border-color 0.25s ease, color 0.25s ease;
+  cursor:default;
+}
+.dest-chip:hover{
+  border-color:var(--gold);
+  color:var(--gold-bright);
+}
+
+/* ---------- Services ---------- */
+.service-list{ display:flex; flex-direction:column; position:relative; }
+.service-progress{
+  position:absolute; left:0; top:0; width:2px; height:0%;
+  background:var(--gold);
+}
+.service-item{
+  display:grid; grid-template-columns:1.4fr 1fr;
+  gap:2rem;
+  padding:2rem 0 2rem 1.4rem;
+  border-top:1px solid var(--line);
+  align-items:baseline;
+}
+.service-item:last-child{ border-bottom:1px solid var(--line); }
+.service-item h3{ font-size:1.4rem; }
+.service-item p{ color:var(--ink-soft); margin:0.4rem 0 0; max-width:52ch; font-size:0.94rem; }
+.service-item .tag{ color:var(--gold); text-align:right; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; }
+
+/* ---------- Testimonials ---------- */
+.testi-grid{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem;
+}
+.testi-card{
+  border:1px solid var(--line);
+  padding:2rem 1.8rem;
+  display:flex; flex-direction:column; gap:1.4rem;
+  position:relative;
+  --quote-mark-scale:1;
+}
+.testi-card::before{
+  content:'"';
+  position:absolute; top:0.6rem; left:1.5rem;
+  font-family:'Cormorant Garamond', serif;
+  font-size:3rem;
+  color:var(--gold);
+  opacity:0.35;
+  transform:scale(var(--quote-mark-scale));
+  transform-origin:top left;
+  line-height:1;
+}
+.testi-card blockquote{
+  margin:1.2rem 0 0; font-family:'Cormorant Garamond', serif; font-style:italic;
+  font-size:1.15rem; line-height:1.5; color:var(--ink);
+}
+.testi-card cite{ font-style:normal; color:var(--gold); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em; }
+
+/* ---------- CTA / contact ---------- */
+.cta-section{
+  background:var(--ground-raised);
+}
+.cta-grid{
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:clamp(2.5rem, 6vw, 5rem);
+}
+.cta-grid h2{
+  color:var(--ink);
+  font-size:clamp(2.1rem, 4vw, 3.1rem);
+  max-width:14ch;
+}
+.cta-grid > div:first-child p{
+  color:var(--ink-soft);
+  max-width:44ch; margin-top:1.3rem;
+}
+.contact-methods{
+  margin-top:2.1rem; display:flex; flex-direction:column; gap:1rem;
+}
+.contact-methods a{
+  text-decoration:none;
+  display:flex; align-items:center; gap:0.8rem;
+  color:var(--ink);
+  font-size:1rem;
+  width:fit-content;
+  border-bottom:1px solid var(--line);
+  padding-bottom:2px;
+  transition:border-color 0.25s ease, color 0.25s ease;
+}
+.contact-methods a:hover{ border-color:var(--gold); color:var(--gold-bright); }
+
+form{ display:flex; flex-direction:column; gap:1.2rem; }
+.field{ display:flex; flex-direction:column; gap:0.5rem; }
+.field label{
+  font-size:0.68rem;
+  text-transform:uppercase; letter-spacing:0.12em;
+  color:var(--ink-soft);
+}
+.field input, .field select{
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--line);
+  padding:0.65rem 0.1rem;
+  color:var(--ink);
+  font-family:'Jost', sans-serif;
+  font-size:1rem;
+  outline:none;
+  transition:border-color 0.25s ease;
+}
+.field input::placeholder{ color:color-mix(in srgb, var(--ink-soft) 70%, transparent); }
+.field input:focus, .field select:focus{ border-color:var(--gold); }
+.field select{ color-scheme:dark; }
+form .btn{
+  margin-top:0.7rem;
+  justify-content:center;
+}
+.form-note{
+  font-size:0.78rem;
+  color:var(--ink-soft);
+  margin-top:-0.2rem;
+}
+
+/* ---------- Footer ---------- */
+footer{
+  background:var(--ground);
+  color:var(--ink-soft);
+  border-top:1px solid var(--line);
+  padding:2.6rem 0;
+}
+.foot-row{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  font-size:0.8rem;
+}
+.foot-row a{ text-decoration:none; color:inherit; }
+.foot-links{ display:flex; gap:1.8rem; list-style:none; padding:0; margin:0; }
+.foot-links a:hover{ color:var(--gold-bright); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 880px){
+  .nav-links, .nav-cta{ display:none; }
+  .nav-toggle{ display:block; }
+  .about-grid, .cta-grid{ grid-template-columns:1fr; }
+  .exp-grid, .testi-grid{ grid-template-columns:1fr; }
+  .service-item{ grid-template-columns:1fr; }
+  .service-item .tag{ text-align:left; }
+}
