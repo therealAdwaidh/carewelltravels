@@ -287,6 +287,18 @@ nav{
   object-fit:cover;
   object-position:50% 5%;
 }
+/* On tall narrow viewports, object-fit:cover crops much more off the
+   top/bottom to fill the frame — with the source photo's gate/sky
+   sitting only in its top ~40% and a water reflection filling the
+   rest, that crop (and the transform-origin the zoom scales from)
+   was pulling in the reflection band instead of staying on the gate,
+   which is what turned the mobile zoom into an unrecognizable blur.
+   Pin both firmly to the top on narrow screens so the zoom stays on
+   the towers/sky throughout. */
+@media (max-width:640px){
+  .gate-photo, .gate-towers{ object-position:50% 0%; }
+  .gate-shot{ transform-origin:50% 30%; }
+}
 .gate-tint{
   display:none;
 }
