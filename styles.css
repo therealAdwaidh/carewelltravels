@@ -278,7 +278,7 @@ nav{
   object-position:50% 5%;
   /* Keep the sunset luminous while bringing its orange saturation closer
      to a natural editorial photograph. */
-  filter:saturate(.78) brightness(.96) contrast(.97);
+  filter:saturate(.72) brightness(.96) contrast(.97) blur(0px);
 }
 .gate-shot{
   position:absolute; inset:0;
@@ -292,7 +292,7 @@ nav{
   object-position:50% 5%;
   /* Soften the warmer foreground slightly so it sits naturally against
      the toned-down sky. */
-  filter:saturate(.88) brightness(.99) contrast(.95);
+  filter:saturate(.78) brightness(.97) contrast(.97);
 }
 /* On tall narrow viewports, object-fit:cover crops much more off the
    top/bottom to fill the frame — with the source photo's gate/sky
@@ -308,6 +308,35 @@ nav{
 }
 .gate-tint{
   display:none;
+}
+/* One shared grade over both layers: a soft vignette pulls the eye to the
+   arch, and a fine film-grain overlay unifies the layers and hides the
+   softness of the source images as they scale up. */
+.gate-vignette{
+  position:absolute; inset:0; z-index:1;
+  background:radial-gradient(ellipse 85% 75% at 50% 52%, transparent 45%, rgba(8,6,10,.55) 100%);
+  pointer-events:none;
+}
+.gate-grain{
+  position:absolute; inset:-50%; z-index:1;
+  width:200%; height:200%;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size:220px 220px;
+  mix-blend-mode:overlay;
+  opacity:.22;
+  pointer-events:none;
+  animation:grain 0.9s steps(6) infinite;
+}
+@keyframes grain{
+  0%{ transform:translate(0,0); }
+  20%{ transform:translate(-3%,2%); }
+  40%{ transform:translate(2%,-3%); }
+  60%{ transform:translate(-2%,-1%); }
+  80%{ transform:translate(3%,3%); }
+  100%{ transform:translate(0,0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .gate-grain{ animation:none; }
 }
 /* Sunset scrub: a dusk gradient multiplied over both hero layers whose
    opacity is scrubbed by scroll, so the golden hour deepens to violet

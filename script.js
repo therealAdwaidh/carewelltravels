@@ -11,7 +11,7 @@
       // frame, so the same 9x scale used on desktop overshoots into an
       // unrecognizable close-up blur almost immediately — scale the max
       // zoom down for small screens so the effect stays legible.
-      zoomTo:window.innerWidth < 640 ? 3.2 : (window.innerWidth < 880 ? 5 : 9),
+      zoomTo:window.innerWidth < 640 ? 2.2 : (window.innerWidth < 880 ? 3 : 4),
       bgZoomTo:1.15            // how far the background sky/mountain layer scales up — much less, so it reads as staying distant
     },
     reveal:{
@@ -75,6 +75,9 @@
       .to('#gateShot', { scale:MOTION.gate.zoomTo, ease:'none' }, 0)
       .to('#gateBg', { scale:MOTION.gate.bgZoomTo, yPercent:-3, ease:'none' }, 0)
       .to('#gateDusk', { opacity:0.8, ease:'power1.in' }, 0)
+      // Focus pull: the distant sky softens slightly as you pass through,
+      // like a lens racking focus onto the foreground gate.
+      .to('#gatePhoto', { filter:'saturate(.72) brightness(.96) contrast(.97) blur(2.5px)', ease:'none' }, 0)
       .to('.scroll-cue', { opacity:0, ease:'none' }, 0);
 
     // The flanking headline gets its own faster, eased fade — it
