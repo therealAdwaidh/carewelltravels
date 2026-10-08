@@ -11,8 +11,8 @@
       // frame, so the same 9x scale used on desktop overshoots into an
       // unrecognizable close-up blur almost immediately — scale the max
       // zoom down for small screens so the effect stays legible.
-      zoomTo:window.innerWidth < 640 ? 3.2 : (window.innerWidth < 880 ? 5 : 9),
-      bgZoomTo:1.15            // how far the background sky/mountain layer scales up — much less, so it reads as staying distant
+      zoomTo:window.innerWidth < 640 ? 6 : (window.innerWidth < 880 ? 8 : 12),
+      bgZoomTo:1.4            // how far the background sky/mountain layer scales up — much less, so it reads as staying distant
     },
     reveal:{
       duration:0.9,
@@ -27,7 +27,7 @@
   var hasGSAP = window.gsap && window.ScrollTrigger;
 
   if(hasGSAP && !reduced){
-    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, window.SplitText);
     hero.classList.add('js-driven');
     gsap.set('.hero-sub, .hero-actions', { opacity:0, y:20 });
 
@@ -68,18 +68,32 @@
       scrollTrigger:{
         trigger:'#top',
         start:'top top',
-        end:'+=70%',
+        end:'+=100%',
         scrub:MOTION.gate.scrub
       }
     })
-      .to('#gateShot', { scale:MOTION.gate.zoomTo, ease:'none' }, 0)
-      .to('#gateBg', { scale:MOTION.gate.bgZoomTo, ease:'none' }, 0)
-      .to('.scroll-cue', { opacity:0, ease:'none' }, 0);
+      .to('#gateShot', { scale:MOTION.gate.zoomTo, duration:1, ease:'power1.in' }, 0)
+      // Once the arch opening is nearly screen-filling, the (soft, enlarged)
+      // stone dissolves so the push ends on a clean full view of the clouds.
+      .to('#gateShot', { opacity:0, ease:'power1.in', duration:0.3 }, 0.45)
+      .to('#gateBg', { scale:MOTION.gate.bgZoomTo, yPercent:-3, duration:1, ease:'none' }, 0)
+      .to('#gateDusk', { opacity:0.62, duration:1, ease:'power1.in' }, 0)
+      // Focus pull: the distant sky softens slightly as you pass through,
+      // like a lens racking focus onto the foreground gate.
+      .to('#gatePhoto', { filter:'saturate(.72) brightness(.96) contrast(.97) blur(1.5px)', duration:1, ease:'none' }, 0)
+      // Ground-level glow/haze would smear into vertical streaks at this
+      // scale — they have long since left the frame, so retire them early.
+      .to('.gate-bloom, .gate-haze, .gate-shade', { opacity:0, duration:0.25, ease:'none' }, 0.25)
+      // Vignette releases so the hero's last frame matches the sky below.
+      .to('.gate-vignette', { opacity:0, duration:0.3, ease:'none' }, 0.6)
+      .to('.scroll-cue', { opacity:0, duration:0.15, ease:'none' }, 0);
 
     // The flanking headline gets its own faster, eased fade — it
     // finishes dissolving within the first quarter of the zoom instead
     // of lingering (faded but still visible) across the whole sequence,
     // so it reads as a clean, smooth exit rather than a slow drag.
+    gsap.to('.gate-copy-left', { x:-70, ease:'none', scrollTrigger:{ trigger:'#top', start:'top top', end:'+=18%', scrub:0.4 } });
+    gsap.to('.gate-copy-right', { x:70, ease:'none', scrollTrigger:{ trigger:'#top', start:'top top', end:'+=18%', scrub:0.4 } });
     gsap.to('.gate-copy', {
       opacity:0, y:-24, ease:'power2.out',
       scrollTrigger:{
@@ -97,6 +111,71 @@
       .to('.gate-copy-left .split-word, .gate-copy-right .split-word', { y:0, duration:0.9, stagger:0.06, ease:'power4.out' }, 0)
       .to('.hero-sub', { opacity:1, y:0, duration:0.8, ease:'power3.out' }, 0.5)
       .to('.hero-actions', { opacity:1, y:0, duration:0.8, ease:'power3.out' }, 0.65);
+
+    // Section headings: SplitText line masks, each line rising out of its
+    // own mask as the heading enters. Section-head h2s drop the clip-path
+    // .reveal so the two effects don't fight; about/cta h2s sit inside a
+    // .reveal parent, which is fine.
+    document.querySelectorAll('.section-head h2.reveal').forEach(function(h){ h.classList.remove('reveal'); });
+    // These cards have their own entrance tweens below; leaving .reveal on
+    // them made both tweens write opacity and the cards stayed invisible.
+    document.querySelectorAll('.exp-card.reveal, .testi-card.reveal').forEach(function(el){ el.classList.remove('reveal'); });
+    if(window.SplitText){
+      gsap.utils.toArray('.section-head h2, .about-grid h2, .cta-grid h2').forEach(function(h){
+        SplitText.create(h, {
+          type:'lines', mask:'lines', linesClass:'split-mask', autoSplit:true,
+          onSplit:function(self){
+            return gsap.from(self.lines, {
+              yPercent:110, duration:1, ease:'power4.out', stagger:0.12,
+              scrollTrigger:{ trigger:h, start:'top 88%', toggleActions:'play none none reverse' }
+            });
+          }
+        });
+      });
+    }
+
+    // Depth parallax: the mountain backdrop drifts slower than the page,
+    // and the destination chips / testimonial cards float at different
+    // speeds so the grid has layers instead of moving as one sheet.
+    if(window.innerWidth > 880){
+      gsap.utils.toArray('.dest-chip').forEach(function(chip, i){
+        gsap.to(chip, {
+          yPercent:(i % 3 - 1) * 28, ease:'none',
+          scrollTrigger:{ trigger:'#destinations', start:'top bottom', end:'bottom top', scrub:true }
+        });
+      });
+      gsap.utils.toArray('.testi-card').forEach(function(card, i){
+        gsap.to(card, {
+          yPercent:(1 - i) * -6, ease:'none',
+          scrollTrigger:{ trigger:card.parentNode, start:'top bottom', end:'bottom top', scrub:true }
+        });
+      });
+    }
+
+    // Sky-to-night: scrubbed across the whole section. Stars are one
+    // box-shadow list per layer (cheap), faded in as the sky darkens.
+    (function(){
+      var stars = document.querySelectorAll('.star-layer');
+      function field(n){
+        var s = [];
+        for(var i = 0; i < n; i++){
+          s.push((Math.random()*100).toFixed(1) + 'vw ' + (Math.random()*72).toFixed(1) + 'vh 0 ' +
+                 (Math.random() < .3 ? 1 : 0) + 'px rgba(255,244,230,' + (0.45 + Math.random()*0.55).toFixed(2) + ')');
+        }
+        return s.join(',');
+      }
+      stars.forEach(function(el){ el.style.boxShadow = field(window.innerWidth < 640 ? 45 : 90); });
+      // The sky fades in over the hero's last frame (identical pixels), so
+      // the hand-off has no seam; the hero then scrolls away unseen beneath.
+      gsap.to('.sky-stick', { opacity:1, ease:'none',
+        scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.85; },
+                        end:function(){ return window.innerHeight; }, scrub:true, invalidateOnRefresh:true } });
+      var st = { trigger:'#mountainReveal', start:'top top', end:'bottom bottom', scrub:true };
+      gsap.to('#skyNight', { opacity:1, ease:'power1.in', scrollTrigger:st });
+      gsap.fromTo('#skyStars', { opacity:0 }, { opacity:1, ease:'none',
+        scrollTrigger:{ trigger:'#mountainReveal', start:'35% top', end:'85% bottom', scrub:true } });
+      gsap.fromTo('.sky-img', { yPercent:0 }, { yPercent:-6, ease:'none', scrollTrigger:st });
+    })();
 
     // Section reveals: clip-path unmask scrubbed against each section's
     // own entry into the viewport (the "section clip" pattern), not a
@@ -193,7 +272,7 @@
       });
     }
     wireScrollBrighten('aboutBrighten', 'rgba(20,16,12,0.4)');
-    wireScrollBrighten('statBrightenText', 'rgba(20,16,12,0.32)');
+    wireScrollBrighten('statBrightenText', 'rgba(242,237,227,0.42)');
     // Word positions depend on final layout (fonts, image sizes) which
     // can still be settling when the triggers above are created —
     // refresh once everything has loaded so each word's screen-center

@@ -120,7 +120,7 @@ nav{
    sky gap on scroll ---------- */
 .hero{
   position:relative;
-  height:170vh;
+  height:200vh;
   padding:0;
   border-top:none;
   background:var(--ground);
@@ -132,10 +132,13 @@ nav{
    "second section" rather than blending straight into the dark UI. */
 .mountain-reveal{
   position:relative;
-  height:220vh;
+  z-index:1;
+  /* Overlaps the hero's pinned viewport: its sky fades in over the hero's
+     last frame (see script.js), so the clouds never cut or restack. */
+  margin-top:-100svh;
   padding:0;
   border-top:none;
-  background:var(--ground);
+  background:transparent;
 }
 /* The photo, tint, and stat typography share one tall frame, but the
    frame itself scrolls normally (no sticky/pin) — the photo is fixed
@@ -145,24 +148,64 @@ nav{
    the page pausing to let it finish. */
 .mountain-pin{
   position:relative;
-  height:100%;
-  min-height:100svh;
-  overflow:hidden;
+  /* clip (not hidden) so the sticky sky below can still pin to the viewport */
+  overflow:clip;
 }
-.mountain-photo{
+/* Continuous sky: this pinned backdrop is pixel-matched to the final frame
+   of the hero zoom (same image, scale, grade and dusk multiply), so there is
+   no seam when the hero releases. As you scroll, the dusk deepens into
+   night and stars appear — the journey carries on up through the sky. */
+.sky-stick{
+  position:sticky; top:0;
+  height:100svh;
+  margin-bottom:-100svh;
+  overflow:hidden;
+  background:#050604;
+  z-index:0;
+}
+.sky-layer{
+  position:absolute; inset:0;
+  transform:scale(1.4) translateY(-3%);
+  transform-origin:50% 50%;
+}
+.sky-img{
   position:absolute; inset:0;
   width:100%; height:100%;
-  object-fit:cover;
-  object-position:50% 60%;
+  object-fit:cover; object-position:50% 5%;
+  filter:saturate(.72) brightness(.96) contrast(.97) blur(1.5px);
+  will-change:transform;
 }
-.mountain-tint{
+@media (max-width:640px){ .sky-img{ object-position:50% 0%; } }
+.sky-dusk{
   position:absolute; inset:0;
-  background:linear-gradient(180deg, transparent 0%, transparent 70%, color-mix(in srgb, var(--ground) 90%, transparent) 100%);
+  background:linear-gradient(180deg, #1c1745 0%, #5b2b66 42%, #c4503b 78%, #e2873f 100%);
+  mix-blend-mode:multiply;
+  opacity:.62;
 }
+.sky-stick{ opacity:0; }
+.sky-night{
+  position:absolute; inset:0;
+  background:var(--ground);
+  opacity:0;
+}
+.sky-stars{ position:absolute; inset:0; opacity:0; pointer-events:none; }
+.star-layer{
+  position:absolute; top:0; left:0;
+  width:3px; height:3px; border-radius:50%;
+  background:transparent;
+  animation:twinkle 4.5s ease-in-out infinite alternate;
+}
+.star-layer.b{ animation-duration:6.5s; animation-delay:-2s; }
+@keyframes twinkle{ from{ opacity:.25; } to{ opacity:1; } }
+/* Cream copy over moving clouds: a soft shadow keeps it legible. */
+.stat-copy{ text-shadow:0 2px 28px rgba(20,8,16,.55); }
 .stat-overlay{
   position:relative;
   z-index:1;
-  height:100%;
+  height:auto;
+  min-height:220vh;
+  /* starts a full viewport down, so the copy rises in from below once the sky has taken over */
+  margin-top:100svh;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -275,17 +318,23 @@ nav{
   width:100%; height:100%;
   object-fit:cover;
   object-position:50% 5%;
+  /* Keep the sunset luminous while bringing its orange saturation closer
+     to a natural editorial photograph. */
+  filter:saturate(.72) brightness(.96) contrast(.97) blur(0px);
 }
 .gate-shot{
   position:absolute; inset:0;
-  transform-origin:50% 58%;
-  will-change:transform;
+  transform-origin:50% 64%;
+  will-change:transform, opacity;
 }
 .gate-towers{
   position:absolute; inset:0;
   width:100%; height:100%;
   object-fit:cover;
   object-position:50% 5%;
+  /* Soften the warmer foreground slightly so it sits naturally against
+     the toned-down sky. */
+  filter:saturate(.78) brightness(.97) contrast(.97);
 }
 /* On tall narrow viewports, object-fit:cover crops much more off the
    top/bottom to fill the frame — with the source photo's gate/sky
@@ -297,10 +346,88 @@ nav{
    the towers/sky throughout. */
 @media (max-width:640px){
   .gate-photo, .gate-towers{ object-position:50% 0%; }
-  .gate-shot{ transform-origin:50% 30%; }
+  .gate-shot{ transform-origin:50% 55%; }
 }
 .gate-tint{
   display:none;
+}
+/* Ground band: the trees and lamps in the source art are soft and noisy,
+   so instead of showing them we let them fall into dusk. A warm-violet
+   multiply shade turns the tree line into soft silhouettes, a low haze
+   drifts across the horizon, and a bloom pass (the brightest pixels of
+   the same image, blurred and screened back) makes the lamps glow so the
+   eye reads light rather than detail. All three live inside the gate
+   layer so they scale with it during the zoom. */
+.gate-bloom{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; object-position:50% 5%;
+  filter:brightness(.55) contrast(3.2) saturate(1.4) blur(7px);
+  mix-blend-mode:screen;
+  opacity:.7;
+  -webkit-mask-image:linear-gradient(180deg, transparent 52%, #000 66%);
+          mask-image:linear-gradient(180deg, transparent 52%, #000 66%);
+  pointer-events:none;
+}
+.gate-shade{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 42%, rgba(70,38,58,.42) 62%, rgba(34,18,30,.78) 88%, rgba(22,12,20,.88) 100%);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.gate-haze{
+  position:absolute; left:-20%; width:140%; bottom:12%; height:34%;
+  background:
+    radial-gradient(ellipse 45% 55% at 30% 60%, rgba(255,186,140,.30), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 72% 55%, rgba(255,168,128,.26), transparent 70%);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  animation:hazeDrift 20s ease-in-out infinite alternate;
+}
+@keyframes hazeDrift{
+  from{ transform:translateX(-5%); }
+  to{ transform:translateX(5%); }
+}
+/* One shared grade over both layers: a soft vignette pulls the eye to the
+   arch, and a fine film-grain overlay unifies the layers and hides the
+   softness of the source images as they scale up. */
+.gate-vignette{
+  position:absolute; inset:0; z-index:1;
+  background:radial-gradient(ellipse 85% 75% at 50% 52%, transparent 45%, rgba(8,6,10,.55) 100%);
+  pointer-events:none;
+}
+.gate-grain{
+  position:absolute; inset:-50%; z-index:1;
+  width:200%; height:200%;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size:220px 220px;
+  mix-blend-mode:overlay;
+  opacity:.22;
+  pointer-events:none;
+  animation:grain 0.9s steps(6) infinite;
+}
+@keyframes grain{
+  0%{ transform:translate(0,0); }
+  20%{ transform:translate(-3%,2%); }
+  40%{ transform:translate(2%,-3%); }
+  60%{ transform:translate(-2%,-1%); }
+  80%{ transform:translate(3%,3%); }
+  100%{ transform:translate(0,0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .gate-grain{ animation:none; }
+  /* JS skips the headline reveal in reduced-motion, so show the words. */
+  .split-word{ transform:none; }
+}
+/* Sunset scrub: a dusk gradient multiplied over both hero layers whose
+   opacity is scrubbed by scroll, so the golden hour deepens to violet
+   dusk as you walk through the gate. */
+.gate-dusk{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, #1c1745 0%, #5b2b66 42%, #c4503b 78%, #e2873f 100%);
+  mix-blend-mode:multiply;
+  opacity:0;
+  pointer-events:none;
 }
 
 /* Flanking split headline: two mirrored two-line phrases sit in the
@@ -345,6 +472,8 @@ nav{
 .split-line{
   display:block; overflow:hidden;
 }
+/* SplitText line masks keep descenders from being clipped */
+.split-mask{ padding-bottom:0.08em; }
 .split-word{
   display:inline-block;
   transform:translateY(115%);
@@ -483,7 +612,7 @@ section{
   display:flex; justify-content:space-between; align-items:flex-end; gap:2rem;
   margin-bottom:3rem; flex-wrap:wrap;
 }
-.section-head h2{ font-size:clamp(1.95rem, 3.6vw, 2.7rem); max-width:18ch; }
+.section-head h2{ font-size:clamp(1.95rem, 3.6vw, 2.7rem); max-width:18ch; line-height:1.2; }
 .exp-grid{
   display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
   background:var(--line);
