@@ -150,8 +150,9 @@ nav{
   overflow:hidden;
 }
 .mountain-photo{
-  position:absolute; inset:0;
-  width:100%; height:100%;
+  position:absolute; left:0; top:-10%;
+  width:100%; height:120%;
+  will-change:transform;
   object-fit:cover;
   object-position:50% 60%;
 }
@@ -275,6 +276,9 @@ nav{
   width:100%; height:100%;
   object-fit:cover;
   object-position:50% 5%;
+  /* Keep the sunset luminous while bringing its orange saturation closer
+     to a natural editorial photograph. */
+  filter:saturate(.78) brightness(.96) contrast(.97);
 }
 .gate-shot{
   position:absolute; inset:0;
@@ -286,6 +290,9 @@ nav{
   width:100%; height:100%;
   object-fit:cover;
   object-position:50% 5%;
+  /* Soften the warmer foreground slightly so it sits naturally against
+     the toned-down sky. */
+  filter:saturate(.88) brightness(.99) contrast(.95);
 }
 /* On tall narrow viewports, object-fit:cover crops much more off the
    top/bottom to fill the frame — with the source photo's gate/sky
@@ -301,6 +308,16 @@ nav{
 }
 .gate-tint{
   display:none;
+}
+/* Sunset scrub: a dusk gradient multiplied over both hero layers whose
+   opacity is scrubbed by scroll, so the golden hour deepens to violet
+   dusk as you walk through the gate. */
+.gate-dusk{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, #1c1745 0%, #5b2b66 42%, #c4503b 78%, #e2873f 100%);
+  mix-blend-mode:multiply;
+  opacity:0;
+  pointer-events:none;
 }
 
 /* Flanking split headline: two mirrored two-line phrases sit in the
@@ -345,6 +362,8 @@ nav{
 .split-line{
   display:block; overflow:hidden;
 }
+/* SplitText line masks keep descenders from being clipped */
+.split-mask{ padding-bottom:0.08em; }
 .split-word{
   display:inline-block;
   transform:translateY(115%);
@@ -483,7 +502,7 @@ section{
   display:flex; justify-content:space-between; align-items:flex-end; gap:2rem;
   margin-bottom:3rem; flex-wrap:wrap;
 }
-.section-head h2{ font-size:clamp(1.95rem, 3.6vw, 2.7rem); max-width:18ch; }
+.section-head h2{ font-size:clamp(1.95rem, 3.6vw, 2.7rem); max-width:18ch; line-height:1.2; }
 .exp-grid{
   display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
   background:var(--line);

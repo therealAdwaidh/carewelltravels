@@ -27,7 +27,7 @@
   var hasGSAP = window.gsap && window.ScrollTrigger;
 
   if(hasGSAP && !reduced){
-    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, window.SplitText);
     hero.classList.add('js-driven');
     gsap.set('.hero-sub, .hero-actions', { opacity:0, y:20 });
 
@@ -73,13 +73,16 @@
       }
     })
       .to('#gateShot', { scale:MOTION.gate.zoomTo, ease:'none' }, 0)
-      .to('#gateBg', { scale:MOTION.gate.bgZoomTo, ease:'none' }, 0)
+      .to('#gateBg', { scale:MOTION.gate.bgZoomTo, yPercent:-3, ease:'none' }, 0)
+      .to('#gateDusk', { opacity:0.8, ease:'power1.in' }, 0)
       .to('.scroll-cue', { opacity:0, ease:'none' }, 0);
 
     // The flanking headline gets its own faster, eased fade — it
     // finishes dissolving within the first quarter of the zoom instead
     // of lingering (faded but still visible) across the whole sequence,
     // so it reads as a clean, smooth exit rather than a slow drag.
+    gsap.to('.gate-copy-left', { x:-70, ease:'none', scrollTrigger:{ trigger:'#top', start:'top top', end:'+=18%', scrub:0.4 } });
+    gsap.to('.gate-copy-right', { x:70, ease:'none', scrollTrigger:{ trigger:'#top', start:'top top', end:'+=18%', scrub:0.4 } });
     gsap.to('.gate-copy', {
       opacity:0, y:-24, ease:'power2.out',
       scrollTrigger:{
@@ -97,6 +100,47 @@
       .to('.gate-copy-left .split-word, .gate-copy-right .split-word', { y:0, duration:0.9, stagger:0.06, ease:'power4.out' }, 0)
       .to('.hero-sub', { opacity:1, y:0, duration:0.8, ease:'power3.out' }, 0.5)
       .to('.hero-actions', { opacity:1, y:0, duration:0.8, ease:'power3.out' }, 0.65);
+
+    // Section headings: SplitText line masks, each line rising out of its
+    // own mask as the heading enters. Section-head h2s drop the clip-path
+    // .reveal so the two effects don't fight; about/cta h2s sit inside a
+    // .reveal parent, which is fine.
+    document.querySelectorAll('.section-head h2.reveal').forEach(function(h){ h.classList.remove('reveal'); });
+    if(window.SplitText){
+      gsap.utils.toArray('.section-head h2, .about-grid h2, .cta-grid h2').forEach(function(h){
+        SplitText.create(h, {
+          type:'lines', mask:'lines', linesClass:'split-mask', autoSplit:true,
+          onSplit:function(self){
+            return gsap.from(self.lines, {
+              yPercent:110, duration:1, ease:'power4.out', stagger:0.12,
+              scrollTrigger:{ trigger:h, start:'top 88%', toggleActions:'play none none reverse' }
+            });
+          }
+        });
+      });
+    }
+
+    // Depth parallax: the mountain backdrop drifts slower than the page,
+    // and the destination chips / testimonial cards float at different
+    // speeds so the grid has layers instead of moving as one sheet.
+    gsap.fromTo('.mountain-photo', { yPercent:-6 }, {
+      yPercent:6, ease:'none',
+      scrollTrigger:{ trigger:'#mountainReveal', start:'top bottom', end:'bottom top', scrub:true }
+    });
+    if(window.innerWidth > 880){
+      gsap.utils.toArray('.dest-chip').forEach(function(chip, i){
+        gsap.to(chip, {
+          yPercent:(i % 3 - 1) * 28, ease:'none',
+          scrollTrigger:{ trigger:'#destinations', start:'top bottom', end:'bottom top', scrub:true }
+        });
+      });
+      gsap.utils.toArray('.testi-card').forEach(function(card, i){
+        gsap.to(card, {
+          yPercent:(1 - i) * -6, ease:'none',
+          scrollTrigger:{ trigger:card.parentNode, start:'top bottom', end:'bottom top', scrub:true }
+        });
+      });
+    }
 
     // Section reveals: clip-path unmask scrubbed against each section's
     // own entry into the viewport (the "section clip" pattern), not a
