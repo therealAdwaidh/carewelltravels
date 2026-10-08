@@ -11,7 +11,7 @@
       // frame, so the same 9x scale used on desktop overshoots into an
       // unrecognizable close-up blur almost immediately — scale the max
       // zoom down for small screens so the effect stays legible.
-      zoomTo:window.innerWidth < 640 ? 6 : (window.innerWidth < 880 ? 8 : 12),
+      zoomTo:window.innerWidth < 640 ? 11 : (window.innerWidth < 880 ? 16 : 24),
       bgZoomTo:1.4            // how far the background sky/mountain layer scales up — much less, so it reads as staying distant
     },
     reveal:{
@@ -75,7 +75,7 @@
       .to('#gateShot', { scale:MOTION.gate.zoomTo, duration:1, ease:'power1.in' }, 0)
       // Once the arch opening is nearly screen-filling, the (soft, enlarged)
       // stone dissolves so the push ends on a clean full view of the clouds.
-      .to('#gateShot', { opacity:0, ease:'power1.in', duration:0.3 }, 0.45)
+      .to('#gateShot', { opacity:0, ease:'power1.in', duration:0.17 }, 0.68)
       .to('#gateBg', { scale:MOTION.gate.bgZoomTo, yPercent:-3, duration:1, ease:'none' }, 0)
       .to('#gateDusk', { opacity:0.62, duration:1, ease:'power1.in' }, 0)
       // Focus pull: the distant sky softens slightly as you pass through,
@@ -86,6 +86,8 @@
       .to('.gate-bloom, .gate-haze, .gate-shade', { opacity:0, duration:0.25, ease:'none' }, 0.25)
       // Vignette releases so the hero's last frame matches the sky below.
       .to('.gate-vignette', { opacity:0, duration:0.3, ease:'none' }, 0.6)
+      .to('.gate-glow', { opacity:0.55, duration:0.25, ease:'power1.in' }, 0.5)
+      .to('.gate-glow', { opacity:0, duration:0.3, ease:'power1.out' }, 0.75)
       .to('.scroll-cue', { opacity:0, duration:0.15, ease:'none' }, 0);
 
     // The flanking headline gets its own faster, eased fade — it
@@ -167,9 +169,19 @@
       stars.forEach(function(el){ el.style.boxShadow = field(window.innerWidth < 640 ? 45 : 90); });
       // The sky fades in over the hero's last frame (identical pixels), so
       // the hand-off has no seam; the hero then scrolls away unseen beneath.
+      // The sky layer first tracks the hero's own background transform
+      // (same scrub lag), then fades in just before the hero releases — so
+      // the two are pixel-identical while they overlap and the page
+      // background never shows through.
+      var bz = MOTION.gate.bgZoomTo;
+      // GSAP reads the CSS fallback transform as pixel x/y; zero it so only yPercent applies.
+      gsap.set('.sky-layer', { x:0, y:0 });
+      gsap.fromTo('.sky-layer', { scale:1 + (bz - 1) * 0.9, yPercent:-3 * 0.9 }, { scale:bz, yPercent:-3, ease:'none',
+        scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.9; },
+                        end:function(){ return window.innerHeight; }, scrub:MOTION.gate.scrub, invalidateOnRefresh:true } });
       gsap.to('.sky-stick', { opacity:1, ease:'none',
-        scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.85; },
-                        end:function(){ return window.innerHeight; }, scrub:true, invalidateOnRefresh:true } });
+        scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.9; },
+                        end:function(){ return window.innerHeight * 0.96; }, scrub:MOTION.gate.scrub, invalidateOnRefresh:true } });
       var st = { trigger:'#mountainReveal', start:'top top', end:'bottom bottom', scrub:true };
       gsap.to('#skyNight', { opacity:1, ease:'power1.in', scrollTrigger:st });
       gsap.fromTo('#skyStars', { opacity:0 }, { opacity:1, ease:'none',
