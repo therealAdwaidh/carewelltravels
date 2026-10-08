@@ -185,6 +185,7 @@ nav{
   opacity:.62;
 }
 .sky-stick{ opacity:0; }
+@media (prefers-reduced-motion: reduce){ .sky-stick{ opacity:1; } }
 .sky-night{
   position:absolute; inset:0;
   background:var(--ground);
@@ -206,8 +207,9 @@ nav{
   z-index:1;
   height:auto;
   min-height:220vh;
-  /* starts a full viewport down, so the copy rises in from below once the sky has taken over */
-  margin-top:100svh;
+  /* starts mid-screen as the arch clears, so the copy arrives with the sky
+     instead of after a screen of bare clouds */
+  margin-top:45svh;
   display:flex;
   flex-direction:column;
   justify-content:space-between;

@@ -179,6 +179,11 @@
       gsap.fromTo('.sky-layer', { scale:1 + (bz - 1) * 0.9, yPercent:-3 * 0.9 }, { scale:bz, yPercent:-3, ease:'none',
         scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.9; },
                         end:function(){ return window.innerHeight; }, scrub:MOTION.gate.scrub, invalidateOnRefresh:true } });
+      // The copy fades in with the sky (it sits mid-screen from the start of
+      // the section, so it must stay hidden while the arch is still on screen).
+      gsap.fromTo('.stat-overlay', { opacity:0 }, { opacity:1, ease:'none',
+        scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.88; },
+                        end:function(){ return window.innerHeight * 0.96; }, scrub:MOTION.gate.scrub, invalidateOnRefresh:true } });
       gsap.to('.sky-stick', { opacity:1, ease:'none',
         scrollTrigger:{ trigger:'#top', start:function(){ return window.innerHeight * 0.9; },
                         end:function(){ return window.innerHeight * 0.96; }, scrub:MOTION.gate.scrub, invalidateOnRefresh:true } });
